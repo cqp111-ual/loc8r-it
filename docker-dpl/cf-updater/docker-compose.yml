@@ -1,0 +1,17 @@
+#version: '3.8'
+
+services:
+  cf-updater:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    image: cf-updater
+    container_name: cf-updater
+    volumes:
+      - ./config.json:/app/config.json:ro
+    environment:
+      TZ: Europe/Madrid
+      UPDATE_FREQ: 1
+    restart: unless-stopped
+    mem_limit: 64m
+    cpus: 0.2

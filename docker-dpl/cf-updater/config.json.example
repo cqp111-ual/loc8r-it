@@ -1,0 +1,22 @@
+{
+  "api_token": "YOUR_CLOUDFLARE_API_TOKEN",
+  "entries": [
+    {
+      "source": {
+        "type": "name",
+        "input": "cnsa-jks-01.spaincentral.cloudapp.azure.com"
+      },
+      "zone": "cqp111-ual.tech",
+      "record": "jenkins.cqp111-ual.tech"
+    },
+    {
+      "source": {
+        "type": "ip",
+        "input": "203.0.113.45"
+      },
+      "zone": "cqp111-ual.tech",
+      "record": "cqp111-ual.tech"
+    }
+  ]
+}
+

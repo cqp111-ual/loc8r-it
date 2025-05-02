@@ -1,0 +1,59 @@
+#version: '3.8'
+
+# Prerrequisite: 
+# docker network create --driver=bridge traefik-proxy
+
+networks:
+  traefik-proxy:
+    external: true
+
+services:
+  traefik:
+    image: traefik:v3.1
+    container_name: traefik
+    restart: unless-stopped
+    ports:
+      # http
+      - 80:80
+      # https
+      - 443:443
+      # # dashboard
+      # - 8080:8080
+      # metrics
+      - 8082:8082
+      # mongodb
+      - 27017:27017
+    environment:
+      - TZ=Europe/Madrid
+    networks:
+      - "traefik-proxy"
+    command:
+      - '--configFile=/etc/traefik/static.yml'
+    volumes:
+      # # Allows Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Mount the static configuration
+      - ./conf/static.yml:/etc/traefik/static.yml:ro
+      # Mount the dynamic configuration
+      - ./conf/dynamic.yml:/etc/traefik/dynamic/dynamic.yml:ro
+      # Mount the volume for certificates
+      - ./conf/ssl:/etc/traefik/ssl:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.providers.docker.network=traefik-proxy"
+      - "traefik.http.services.traefik-dashboard.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.traefik-dashboard-auth.basicauth.users=admin:$$apr1$$fv/Ba.BG$$3ZjB.uKxEV6GSQgmaePGI0"
+
+      # # HTTP Traffic (port 80)
+      # - "traefik.http.routers.traefik-dashboard-http.entrypoints=web"
+      # - "traefik.http.routers.traefik-dashboard-http.rule=Host(`traefik.cqp111-ual.tech`)"
+      # - "traefik.http.routers.traefik-dashboard-http.middlewares=redirect-to-https@file"
+
+      # HTTPS Traffic (port 443)
+      - "traefik.http.routers.traefik-dashboard-https.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard-https.tls=true"
+      - "traefik.http.routers.traefik-dashboard-https.rule=Host(`traefik.cqp111-ual.tech`)"
+      - "traefik.http.routers.traefik-dashboard-https.middlewares=traefik-dashboard-auth"
+      - "traefik.http.routers.traefik-dashboard-https.service=api@internal"
+    mem_limit: 512m
+    cpus: 1.0

@@ -1,0 +1,28 @@
+http:
+  middlewares:
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+
+#    example-whitelist:
+#      ipWhiteList:
+#        sourceRange:
+#          - "192.168.50.0/24"
+
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12
+      maxVersion: VersionTLS12
+      sniStrict: true
+#      clientAuth:
+#        caFiles:
+#          - /etc/traefik/ssl/cert.es/cert.es.ca_crt
+  certificates:
+   # cqp111-ual.tech
+   - certFile: /etc/traefik/ssl/cqp111-ual.tech/cqp111-ual.tech.crt
+     keyFile: /etc/traefik/ssl/cqp111-ual.tech/cqp111-ual.tech.key
+     stores:
+       - default
+
+

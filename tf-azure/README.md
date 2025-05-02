@@ -1,0 +1,1 @@
+Infrastructure deployment with Terraform on Azure cloud provider.

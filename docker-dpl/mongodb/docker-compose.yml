@@ -1,0 +1,77 @@
+#version: '3.8'
+
+networks:
+  # External network for proxy discovery
+  traefik-proxy:
+    external: true
+  # # Internal network for services
+  # mongo-net:
+  #   driver: bridge
+
+services:
+  mongodb:
+    image: mongodb/mongodb-community-server:5.0-ubuntu2004
+    container_name: mongodb
+    # ports:
+    #   - "27017:27017"
+    networks:
+      - traefik-proxy
+      # - mongo-net
+    env_file:
+      - .env
+    environment:
+      TZ: "Europe/Madrid"
+      MONGO_INITDB_ROOT_USERNAME: "${DB_ROOT_USER}"
+      MONGO_INITDB_ROOT_PASSWORD: "${DB_ROOT_PASS}"
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      # - ./data:/data/db
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.providers.docker.network=traefik-proxy"
+      - "traefik.tcp.services.mongodb.loadbalancer.server.port=27017"
+      # TCP router with TLS
+      - "traefik.tcp.routers.mongodb-tcp.entrypoints=mongo"
+      - "traefik.tcp.routers.mongodb-tcp.tls=true"
+      - "traefik.tcp.routers.mongodb-tcp.service=mongodb"
+      - "traefik.tcp.routers.mongodb-tcp.rule=HostSNI(`mongodb.cqp111-ual.tech`)"
+    mem_limit: 256m
+    cpus: 0.5
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    # ports:
+    #   - "8081:8081"
+    networks:
+      - traefik-proxy
+      # - mongo-net
+    env_file:
+      - .env
+    environment:
+      TZ: "Europe/Madrid"
+      ME_CONFIG_ENABLE_ADMIN: "true"
+      ME_CONFIG_MONGODB_URL: "mongodb://${DB_ROOT_USER}:${DB_ROOT_PASS}@mongodb:27017"
+      ME_CONFIG_BASICAUTH: "false"
+      # ME_CONFIG_BASICAUTH_ENABLED: "false"
+      ME_CONFIG_REQUEST_SIZE:	"1mb"
+      ME_CONFIG_OPTIONS_CONFIRM_DELETE: "true"
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.providers.docker.network=traefik-proxy"
+      - "traefik.http.services.mongo-express.loadbalancer.server.port=8081"
+      # # HTTP Traffic 80 (redirect)
+      # - "traefik.http.routers.mongo-express-http.entrypoints=web"
+      # - "traefik.http.routers.mongo-express-http.rule=Host(`mongo-express.cqp111-ual.tech`)"
+      # - "traefik.http.routers.mongo-express-http.middlewares=redirect-to-https@file"
+      # HTTPS Traffic 443
+      - "traefik.http.routers.mongo-express-https.entrypoints=websecure"
+      - "traefik.http.routers.mongo-express-https.tls=true"
+      - "traefik.http.routers.mongo-express-https.service=mongo-express"
+      - "traefik.http.routers.mongo-express-https.rule=Host(`mongo-express.cqp111-ual.tech`)"
+    mem_limit: 128m
+    cpus: 0.25
