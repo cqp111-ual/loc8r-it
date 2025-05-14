@@ -1,0 +1,52 @@
+azure-subscription    = "XXXXXX-XXXXXXX-XXXXXX-XXXXX"
+azure-tenant          = "XXXXXX-XXXXXXX-XXXXXX-XXXXX"
+azure-resource-group  = "loc-rg"
+azure-location        = "spaincentral"
+azure-net-name        = "loc-net"
+azure-address-space   = ["10.0.0.0/16"]
+azure-dns-servers     = ["8.8.8.8"]
+azure-subnet-name     = "loc-subnet"
+azure-subnet-prefixes = ["10.0.100.0/24"]
+azure-nsg-name        = "loc-nsg"
+
+# Global VMs options
+azure-admin-username       = "azureuser"
+azure-storage-account-type = "Standard_LRS"
+
+# # Sizes:
+# - Standard_B1s  [1 vcpu, 1gb ram]
+# - Standard_B1ms [1 vcpu, 2gb ram]
+# - Standard_B2s  [2 vcpu, 4gb ram]
+# - Standard_B2ms [2 vcpu, 8gb ram]
+
+# # Ubuntu 24
+# azure-os-publisher = "Canonical"
+# azure-os-offer     = "ubuntu-24_04-lts"
+# azure-os-sku       = "server"
+# azure-os-version   = "latest"
+
+# Debian 11
+azure-os-publisher = "Debian"
+azure-os-offer     = "debian-11"
+azure-os-sku       = "11-backports-gen2"
+azure-os-version   = "latest"
+
+# Jenkins node 
+jenkins-vm-name           = "loc-jks-100"
+jenkins-vm-size           = "Standard_B1ms"
+jenkins-privateip-address = "10.0.100.10"
+
+# Build node
+build-vm-name           = "loc-bld-100"
+build-vm-size           = "Standard_B1ms"
+build-privateip-address = "10.0.100.20"
+
+# Staging (pre) node
+stage-vm-name           = "loc-pre-100"
+stage-vm-size           = "Standard_B1ms"
+stage-privateip-address = "10.0.100.30"
+
+# Deployment (prod) node 
+deploy-vm-name           = "loc-prod-100"
+deploy-vm-size           = "Standard_B1ms"
+deploy-privateip-address = "10.0.100.40"
