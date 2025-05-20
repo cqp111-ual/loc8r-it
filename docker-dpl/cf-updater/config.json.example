@@ -3,6 +3,14 @@
   "entries": [
     {
       "source": {
+        "type": "cmd",
+        "input": "curl -4 ifconfig.me"
+      },
+      "zone": "cqp111-ual.tech",
+      "record": "srv18.cqp111-ual.tech"
+    },
+    {
+      "source": {
         "type": "name",
         "input": "cnsa-jks-01.spaincentral.cloudapp.azure.com"
       },

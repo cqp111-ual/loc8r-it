@@ -12,6 +12,6 @@ services:
     environment:
       TZ: Europe/Madrid
       UPDATE_FREQ: 1
-    restart: unless-stopped
+    restart: always
     mem_limit: 64m
     cpus: 0.2

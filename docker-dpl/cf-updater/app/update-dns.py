@@ -38,6 +38,16 @@ def resolve_source_ip(source):
                 log(f"No IP resolved for {source['input']}", "error")
         except Exception as e:
             log(f"Error resolving IP from name: {e}", "error")
+    elif source["type"] == "cmd":
+        try:
+            result = subprocess.run(source["input"], shell=True, capture_output=True, text=True)
+            ip = result.stdout.strip()
+            if ip:
+                return ip
+            else:
+                log(f"No IP resolved from command: {source['input']}", "error")
+        except Exception as e:
+            log(f"Error resolving IP from command: {e}", "error")
     else:
         log(f"Invalid source type: {source['type']}", "error")
     return None
